@@ -1,0 +1,77 @@
+{
+  "name": "@mypandora/pro-layout",
+  "version": "0.0.1",
+  "description": "一个基于 vue 的布局组件。",
+  "main": "dist/index.umd.min.js",
+  "keywords": [
+    "vue",
+    "vue 2",
+    "layout",
+    "element-ui"
+  ],
+  "author": "mypandora",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "http",
+    "url": "git@github.com:mypandora/pro-layout.git"
+  },
+  "scripts": {
+    "commit": "cz",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --target lib --dest dist --filename index packages/layout/index.js",
+    "lint": "vue-cli-service lint --fix src packages",
+    "lint-staged": "lint-staged",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*.{js,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-standard": "^8.0.1",
+    "commitizen": "^4.2.4",
+    "compression-webpack-plugin": "^10.0.0",
+    "core-js": "^3.25.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "element-ui": "^2.15.8",
+    "eslint": "^8.23.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^6.0.1",
+    "eslint-plugin-vue": "^9.4.0",
+    "fuse.js": "^6.6.2",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "path-browserify": "^1.0.1",
+    "prettier": "^2.4.1",
+    "process": "^0.11.10",
+    "sass": "^1.52.3",
+    "sass-loader": "^13.0.0",
+    "screenfull": "^6.0.2",
+    "svg-sprite-loader": "^6.0.11",
+    "vue": "2.7.10",
+    "vue-router": "3.5.4",
+    "vue-template-compiler": "2.7.10"
+  },
+  "peerDependencies": {
+    "element-ui": "^2.15.8"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

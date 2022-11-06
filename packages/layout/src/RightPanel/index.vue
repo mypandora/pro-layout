@@ -1,0 +1,97 @@
+<template>
+  <div ref="rightPanel">
+    <div class="rightPanel-background" />
+    <div class="rightPanel">
+      <div class="rightPanel-items">
+        <slot />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'RightPanel',
+  props: {
+    clickNotClose: {
+      type: Boolean,
+      default: false,
+    },
+    showSettings: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    show: {
+      get() {
+        return this.showSettings;
+      },
+      set(val) {
+        this.$emit('changeSetting', {
+          key: 'showSettings',
+          value: val,
+        });
+      },
+    },
+  },
+  watch: {
+    show(value) {
+      if (value && !this.clickNotClose) {
+        this.addEventClick();
+      }
+    },
+  },
+  mounted() {
+    this.insertToBody();
+    this.addEventClick();
+  },
+  beforeDestroy() {
+    const elx = this.$refs.rightPanel;
+    elx.remove();
+  },
+  methods: {
+    addEventClick() {
+      window.addEventListener('click', this.closeSidebar);
+    },
+    closeSidebar(evt) {
+      const parent = evt.target.closest('.el-drawer__body');
+      if (!parent) {
+        this.show = false;
+        window.removeEventListener('click', this.closeSidebar);
+      }
+    },
+    insertToBody() {
+      const elx = this.$refs.rightPanel;
+      const body = document.querySelector('body');
+      body.insertBefore(elx, body.firstChild);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.rightPanel-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+  background: rgba(0, 0, 0, 0.2);
+  z-index: -1;
+}
+
+.rightPanel {
+  width: 100%;
+  max-width: 260px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transform: translate(100%);
+  background: #fff;
+  z-index: 40000;
+}
+</style>
