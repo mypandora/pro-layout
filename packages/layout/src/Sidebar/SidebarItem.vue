@@ -1,64 +1,15 @@
-<template>
-  <div v-if="!item.hidden">
-    <template
-      v-if="
-        (hasOneShowingChild(item.children, item) &&
-          (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-          !item.alwaysShow) ||
-        item.menuType === 'C'
-      "
-    >
-      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
-          <item :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" :title="onlyOneChild.meta.title" />
-        </el-menu-item>
-      </app-link>
-    </template>
-
-    <el-submenu
-      v-else
-      ref="subMenu"
-      :index="resolvePath(item.path)"
-      popper-class="mypandora-side-popper-menu"
-      popper-append-to-body
-    >
-      <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
-      </template>
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :is-nest="true"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-        :device="device"
-        :theme="theme"
-        class="nest-menu"
-      />
-    </el-submenu>
-  </div>
-</template>
-
 <script>
 import path from 'path';
-import Item from './Item';
+import AppItem from './Item';
 import AppLink from './Link';
 import FixiOSBug from './FixiOSBug';
 import { isExternal } from '../utils';
 
 export default {
   name: 'SidebarItem',
-  components: { Item, AppLink },
+  components: { AppItem, AppLink },
   mixins: [FixiOSBug],
   props: {
-    device: {
-      type: String,
-      default: 'desktop',
-    },
-    theme: {
-      type: String,
-      default: 'transparent',
-    },
     // route object
     item: {
       type: Object,
@@ -118,6 +69,53 @@ export default {
       }
       return path.resolve(this.basePath, routePath);
     },
+  },
+  render() {
+    const { item, isNest } = this;
+
+    if (item.hidden) {
+      return;
+    }
+
+    const only =
+      (this.hasOneShowingChild(item.children, item) &&
+        (!this.onlyOneChild.children || this.onlyOneChild.noShowingChildren) &&
+        !item.alwaysShow) ||
+      item.menuType === 'C';
+
+    if (only) {
+      const index = this.resolvePath(this.onlyOneChild.path);
+      return (
+        this.onlyOneChild.meta && (
+          <el-menu-item index={index} class={{ 'submenu-title-noDropdown': !isNest }}>
+            <app-link to={this.resolvePath(this.onlyOneChild.path, this.onlyOneChild.query)}>
+              <span>
+                <app-item
+                  icon={this.onlyOneChild.meta.icon || (item.meta && item.meta.icon)}
+                  title={this.onlyOneChild.meta.title}
+                />
+              </span>
+            </app-link>
+          </el-menu-item>
+        )
+      );
+    }
+
+    return (
+      <div>
+        <el-submenu
+          ref="subMenu"
+          index={this.resolvePath(item.path)}
+          popper-class="mypandora-layout-side-popper-menu"
+          popper-append-to-body
+        >
+          {item.meta && <app-item slot="title" icon={item.meta && item.meta.icon} title={item.meta.title} />}
+          {item.children.map((child) => (
+            <sidebar-item key={child.path} is-nest={true} item={child} base-path={this.resolvePath(child.path)} />
+          ))}
+        </el-submenu>
+      </div>
+    );
   },
 };
 </script>

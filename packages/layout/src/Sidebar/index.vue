@@ -1,66 +1,3 @@
-<template>
-  <aside
-    class="sidebar-container"
-    :class="{ 'theme-dark': sideTheme === 'theme-dark', 'sidebar-container-fixed': fixedSide, 'has-logo': showLogo }"
-    :style="{
-      width: `${sidebarOpened ? width : collpaseWidth}px`,
-      paddingTop: settings.navMode === 'mix' ? '60px' : 0,
-      background: sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground,
-    }"
-  >
-    <logo v-if="showLogo" />
-    <el-scrollbar v-if="fixedSide" :class="sideTheme" wrap-class="hidden-x">
-      <el-menu
-        :default-active="activeMenu"
-        :collapse="isCollapse"
-        :background-color="sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
-        :text-color="sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
-        :unique-opened="uniqueOpened"
-        :active-text-color="theme"
-        :collapse-transition="false"
-        mode="vertical"
-      >
-        <sidebar-item
-          v-for="(route, index) in sidebarRoutes"
-          :key="route.path + index"
-          :item="route"
-          :base-path="route.path"
-          :device="device"
-          :theme="theme"
-        />
-      </el-menu>
-    </el-scrollbar>
-    <div v-else :class="sideTheme" style="flex: 1">
-      <el-menu
-        :default-active="activeMenu"
-        :collapse="isCollapse"
-        :background-color="sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
-        :text-color="sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
-        :unique-opened="uniqueOpened"
-        :active-text-color="theme"
-        :collapse-transition="false"
-        mode="vertical"
-      >
-        <sidebar-item
-          v-for="(route, index) in sidebarRoutes"
-          :key="route.path + index"
-          :item="route"
-          :base-path="route.path"
-          :device="device"
-          :theme="theme"
-        />
-      </el-menu>
-    </div>
-
-    <hamburger
-      :is-active="sidebarOpened"
-      class="hamburger-container"
-      :class="{ 'theme-dark hamburger-theme-dark': sideTheme === 'theme-dark' }"
-      @toggleClick="toggleSidebar"
-    />
-  </aside>
-</template>
-
 <script>
 import Logo from './Logo';
 import SidebarItem from './SidebarItem';
@@ -75,42 +12,8 @@ export default {
     rootProps() {
       return this.$computedProperty();
     },
-    width() {
-      return this.rootProps.sideWidth;
-    },
-    collpaseWidth() {
-      return this.rootProps.sideCollpaseWidth;
-    },
-    device() {
-      return this.rootProps.device;
-    },
-    logoTitle() {
-      return this.rootProps.logoTitle;
-    },
-    sidebarOpened() {
-      return this.rootProps.sidebar.opened;
-    },
     settings() {
       return this.rootProps.settings;
-    },
-    sidebarRoutes() {
-      return this.rootProps.sidebarRoutes;
-    },
-    showLogo() {
-      const { showLogo, navMode } = this.settings;
-      return showLogo && navMode !== 'mix';
-    },
-    sideTheme() {
-      const { sideTheme } = this.settings;
-      return sideTheme;
-    },
-    fixedSide() {
-      const { fixedSide } = this.settings;
-      return fixedSide;
-    },
-    theme() {
-      const { theme } = this.settings;
-      return theme;
     },
     activeMenu() {
       const route = this.$route;
@@ -124,17 +27,71 @@ export default {
     variables() {
       return variables;
     },
-    isCollapse() {
-      return !this.sidebarOpened;
-    },
-    uniqueOpened() {
-      return this.settings.uniqueOpened || false;
-    },
   },
   methods: {
     toggleSidebar() {
       this.$emit('toggleSidebar');
     },
+  },
+  render() {
+    const { rootProps, settings, activeMenu } = this;
+    const { sideWidth, sideCollpaseWidth, sidebar, sidebarRoutes } = rootProps;
+    const { sideTheme, fixedSide, theme, uniqueOpened: unique, showLogo: show, navMode } = settings;
+    const showLogo = show && navMode !== 'mix';
+    const sidebarOpened = sidebar.opened;
+    const isCollapse = !sidebarOpened;
+    const uniqueOpened = unique || false;
+
+    const classObj = {
+      'mypandora-layout-side': true,
+      'mypandora-layout-side-dark': sideTheme === 'theme-dark',
+      'mypandora-layout-side-light': sideTheme === 'theme-light',
+      'mypandora-layout-side-fixed': fixedSide,
+    };
+
+    const classHamburgerObj = {
+      'mypandora-layout-side-hamburger': true,
+      'mypandora-layout-side-hamburger-dark': sideTheme === 'theme-dark',
+    };
+
+    const styleObj = {
+      width: `${sidebarOpened ? sideWidth : sideCollpaseWidth}px`,
+      paddingTop: settings.navMode === 'mix' ? '60px' : 0,
+      '--color': sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor,
+      '--backgroundColor': sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground,
+      '--subBackgroundColor': sideTheme === 'theme-dark' ? variables.subMenuBackground : variables.menuLightBackground,
+    };
+
+    const elMenu = (
+      <el-menu
+        default-active={activeMenu}
+        collapse={isCollapse}
+        background-color={sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground}
+        text-color={sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor}
+        unique-opened={uniqueOpened}
+        active-text-color={theme}
+        collapse-transition={false}
+        mode="vertical"
+      >
+        {sidebarRoutes.map((route, index) => (
+          <sidebar-item key={route.path + index} item={route} base-path={route.path} />
+        ))}
+      </el-menu>
+    );
+    return (
+      <aside class={classObj} style={styleObj}>
+        <el-collapse-transition>{showLogo && <logo />}</el-collapse-transition>
+        {fixedSide ? (
+          <el-scrollbar class="mypandora-layout-side-menu" wrap-class="hidden-x">
+            {elMenu}
+          </el-scrollbar>
+        ) : (
+          <div class="mypandora-layout-side-menu">{elMenu}</div>
+        )}
+
+        <hamburger class={classHamburgerObj} is-active={sidebarOpened} vOn:toggleClick={this.toggleSidebar} />
+      </aside>
+    );
   },
 };
 </script>

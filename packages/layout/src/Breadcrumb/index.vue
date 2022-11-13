@@ -13,8 +13,7 @@
 
 <script>
 export default {
-  // eslint-disable-next-line
-  name: 'Breadcrumb',
+  name: 'MypandoraBreadcrumb',
   data() {
     return {
       levelList: null,

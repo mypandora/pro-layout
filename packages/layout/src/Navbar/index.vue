@@ -31,11 +31,9 @@ export default {
     const { theme, navMode, autoMenu, fixedHeader, showSide, showLogo } = settings;
 
     const rightMenu = $slots.rightMenu;
-
     const color = getGrayReversedColor(theme);
-    const backgroundColor = theme;
 
-    const style = { color, backgroundColor, width: '100%' };
+    const style = { color, width: '100%' };
     if (device === 'mobile') {
       style.width = '100%';
     } else if (navMode === 'side' && showSide && fixedHeader) {
@@ -49,8 +47,8 @@ export default {
     return (
       <header
         class={{
-          header: true,
-          header__fixed: fixedHeader || navMode === 'mix',
+          'mypandora-layout-header': true,
+          'mypandora-layout-header-fixed': fixedHeader || navMode === 'mix',
           'has-logo': showLogo && navMode !== 'side',
         }}
         style={style}

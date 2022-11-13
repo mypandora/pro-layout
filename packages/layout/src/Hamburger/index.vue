@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: 'HamburgerIcon',
+  name: 'MypandoraHamburger',
   props: {
     isActive: {
       type: Boolean,

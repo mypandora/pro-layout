@@ -18,7 +18,7 @@ export const getRoutes = () => {
               hidden: false,
               component: 'demo',
               meta: {
-                title: '部门管理',
+                title: '部门444444444444444444444444444444444444444444444444444444444管理',
                 icon: 'tree',
                 noCache: false,
                 link: null,
@@ -78,7 +78,7 @@ export const getRoutes = () => {
                   path: 'operlog',
                   hidden: false,
                   component: 'demo',
-                  meta: { title: '操作日志', icon: 'form', noCache: false, link: null },
+                  meta: { title: '操作5555555555555555555日志', icon: 'form', noCache: false, link: null },
                 },
                 {
                   name: 'Logininfor',

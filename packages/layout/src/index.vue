@@ -1,43 +1,52 @@
 <template>
-  <div :class="classObj" class="mypandora-pro-basicLayout" :style="{ '--theme': settings.theme }">
-    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar v-show="showSide" @toggleSidebar="toggleSidebar" />
+  <div :class="classObj" class="mypandora-pro-layout" :style="{ '--theme': settings.theme }">
+    <div
+      v-if="device === 'mobile' && sidebar.opened"
+      class="mypandora-pro-layout-drawer-bg"
+      @click="handleClickOutside"
+    />
+    <transition name="mypandora-ltf">
+      <sidebar v-show="showSide" @toggleSidebar="toggleSidebar" />
+    </transition>
     <div
       v-if="settings.fixedSide && showSide"
-      class="sidebar-container-placeholder"
+      class="sidebar-placeholder"
       :style="{
         width: `${sidebar.opened ? sideWidth : sideCollpaseWidth}px`,
       }"
     ></div>
 
-    <section :class="{ fixedHeader: settings.fixedHeader }" class="main-container">
-      <navbar v-if="settings.showHeader" @setSidebarRoutes="setSidebarRoutes" />
+    <section :class="{ fixedHeader: settings.fixedHeader }" class="mypandora-layout-container">
+      <transition name="el-zoom-in-top">
+        <navbar v-if="settings.showHeader" @setSidebarRoutes="setSidebarRoutes" />
+      </transition>
       <div
         v-if="(settings.fixedHeader || settings.navMode === 'mix') && settings.showHeader"
         class="header-placeholder"
         :style="{ height: settings.fixedHeader || settings.navMode === 'mix' ? '60px' : 0 }"
       ></div>
-      <slot v-if="settings.showTagsView" name="tagsView"></slot>
+      <transition name="el-zoom-in-top">
+        <slot v-if="settings.showTagsView" name="tagsView"></slot>
+      </transition>
       <app-main :tagsView="tagsView" />
     </section>
-    <right-panel :showSettings="settings.showSettings" @changeSetting="handleSetting">
-      <settings
-        :predefine="predefine"
-        :settings="settings"
-        @changeSetting="handleSetting"
-        @setSidebarRoutes="setSidebarRoutes"
-      />
-    </right-panel>
+
+    <settings
+      :predefine="predefine"
+      :settings="settings"
+      @changeSetting="handleSetting"
+      @setSidebarRoutes="setSidebarRoutes"
+    />
 
     <!-- 隐藏顶部时 -->
-    <div v-if="!settings.showHeader" class="mypandora-pro-setting-drawer-handle" @click.stop="handleClick">
+    <div v-if="!settings.showHeader" class="mypandora-pro-layout-setting" @click.stop="handleClick">
       <i class="el-icon-setting"></i>
     </div>
 
     <!-- mobile 时 -->
     <hamburger
       v-if="device === 'mobile' && !sidebar.opened && settings.navMode !== 'top'"
-      class="mypandora-pro-menu-drawer-handle"
+      class="mypandora-pro-layout-hamburger"
       :class="{ 'theme-dark': settings.sideTheme === 'theme-dark' }"
       @toggleClick="toggleSidebar"
     />
@@ -48,7 +57,6 @@
 import AppMain from './AppMain.vue';
 import Navbar from './Navbar/index.vue';
 import Sidebar from './Sidebar';
-import RightPanel from './RightPanel';
 import Settings from './Settings';
 import Hamburger from './Hamburger';
 import './assets/styles/index.scss';
@@ -62,7 +70,6 @@ export default {
     AppMain,
     Navbar,
     Sidebar,
-    RightPanel,
     Settings,
     Hamburger,
   },
@@ -165,9 +172,9 @@ export default {
       const hideSidebar = !showSide;
 
       return {
-        'mypandora-pro-basicLayout-side': navMode === 'side',
-        'mypandora-pro-basicLayout-top': navMode === 'top',
-        'mypandora-pro-basicLayout-mix': navMode === 'mix',
+        'mypandora-pro-layout-side': navMode === 'side',
+        'mypandora-pro-layout-top': navMode === 'top',
+        'mypandora-pro-layout-mix': navMode === 'mix',
         closeSidebar,
         openSidebar,
         hideSidebar,

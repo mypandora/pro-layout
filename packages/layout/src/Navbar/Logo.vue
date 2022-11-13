@@ -19,17 +19,26 @@ export default {
     const style = { backgroundColor: theme };
     const titleStyle = { color: getGrayReversedColor(theme) };
 
-    const { logo } = $slots;
+    const { logo, logoRender } = $slots;
+    let content = null;
+
+    if (logoRender) {
+      content = logoRender;
+    } else {
+      content = (
+        <router-link to="/">
+          {logo}
+          <h1 style={titleStyle}>{logoTitle}</h1>
+        </router-link>
+      );
+    }
 
     return (
-      <div class="mypandora-navbar-logo" style={style}>
-        <router-link class="logo-link" to="/">
-          {logo}
-          <h1 class="logo-title" style={titleStyle}>
-            {logoTitle}
-          </h1>
-        </router-link>
-      </div>
+      <transition name="el-zoom-in-center">
+        <div class="mypandora-layout-navbar-logo" style={style}>
+          {content}
+        </div>
+      </transition>
     );
   },
 };

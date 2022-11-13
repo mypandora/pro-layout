@@ -1,11 +1,5 @@
 <template>
-  <el-drawer
-    size="280px"
-    :visible="settings.showSettings"
-    :with-header="false"
-    :append-to-body="true"
-    :show-close="false"
-  >
+  <el-drawer size="280px" :visible.sync="visible" :with-header="false" :append-to-body="true" :show-close="false">
     <div class="drawer-container">
       <h3 class="drawer-title">整体风格设置</h3>
       <div class="drawer-item">
@@ -128,6 +122,17 @@ export default {
     },
     settings() {
       return this.rootProps.settings;
+    },
+    visible: {
+      get() {
+        return this.settings.showSettings;
+      },
+      set(val) {
+        this.$emit('changeSetting', {
+          key: 'showSettings',
+          value: val,
+        });
+      },
     },
   },
   methods: {
