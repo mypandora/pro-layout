@@ -106,7 +106,7 @@ export default {
       } else if (!this.children) {
         activePath = path;
       }
-      this.activeRoutes(activePath);
+      // this.activeRoutes(activePath);
       return activePath;
     },
   },

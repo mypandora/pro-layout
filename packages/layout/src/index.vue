@@ -114,10 +114,6 @@ export default {
         showLogo: true, // 显示Logo
       }),
     },
-    tagsView: {
-      type: Object,
-      default: () => ({}),
-    },
   },
   data() {
     return {

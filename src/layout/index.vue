@@ -91,7 +91,6 @@ export default {
         showHeader: true, // 显示顶栏
         showSide: true, // 显示菜单，即显示侧边菜单
         showLogo: true, // 显示Logo
-        showTagsView: false, // 显示页签
       },
       device: 'desktop',
     };
@@ -135,12 +134,6 @@ export default {
   },
   mounted() {
     this.getData();
-  },
-  beforeUpdate() {
-    console.log('beforeUpdate');
-  },
-  updated() {
-    console.log('updated');
   },
 };
 </script>

@@ -202,12 +202,6 @@ export default {
         value: val,
       });
     },
-    handleShowTagsView(val) {
-      this.$emit('changeSetting', {
-        key: 'showTagsView',
-        value: val,
-      });
-    },
 
     saveSetting() {
       const loadingInstance = Loading.service({
@@ -231,8 +225,6 @@ export default {
             "showHeader":${this.settings.showHeader},
             "showSide":${this.settings.showSide},
             "showLogo":${this.settings.showLogo},
-            "showTagsView":${this.settings.showTagsView},
-
           }`,
       );
       setTimeout(loadingInstance.close(), 1000);

@@ -26,7 +26,6 @@ npm install @mypandora/pro-layout
 | menuRoutes | 路由数组 | Array | - | [] |
 | predefine | 预设颜色 | Array | - | ['#2e59a7', '#80d1c8', '#0095b6', '#ff770f', '#1a7bb0'] |
 | settings | 布局配置 | Object | - | - |
-| tagsView | 页签配置 | Object | - | - |
 
 ### menuRoutes
 
@@ -57,7 +56,6 @@ npm install @mypandora/pro-layout
 | showHeader   | 是否显示顶栏     | Boolean | true, false             | true        |
 | showSide     | 是否显示菜单     | Boolean | true, false             | true        |
 | showLogo     | 是否显示 Logo    | Boolean | true, false             | true        |
-| showTagsView | 是否启用页签     | Boolean | true, false             | true        |
 
 ### 插槽
 
@@ -66,4 +64,4 @@ npm install @mypandora/pro-layout
 | logo       | layout 的左上角 logo |
 | logoRender | layout 的左上角      |
 | rightMenu  | 导航栏最右侧菜单区域 |
-| tagsView   | 页签插槽             |
+| default    | 默认插槽             |
