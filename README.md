@@ -8,6 +8,8 @@ Vue-Router 3.5.4+
 
 Element-UI 2.15.8+
 
+svg-sprite-loader 6.0.11+
+
 ### 安装
 
 ```
@@ -27,7 +29,7 @@ npm install @mypandora/pro-layout
 | predefine | 预设颜色 | Array | - | ['#2e59a7', '#80d1c8', '#0095b6', '#ff770f', '#1a7bb0'] |
 | settings | 布局配置 | Object | - | - |
 
-### menuRoutes
+#### menuRoutes
 
 | 参数        | 说明                     | 类型    | 可选值      | 默认值     |
 | ----------- | ------------------------ | ------- | ----------- | ---------- |
@@ -42,7 +44,7 @@ npm install @mypandora/pro-layout
 | permissions | 访问路由的菜单权限       | Array   |             |            |
 | meta        | 路由元数据信息           | Object  |             |            |
 
-### settings
+#### settings
 
 | 参数         | 说明             | 类型    | 可选值                  | 默认值      |
 | ------------ | ---------------- | ------- | ----------------------- | ----------- |

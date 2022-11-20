@@ -226,6 +226,7 @@ $w: 8, 16;
 .#{$css-prefix}-layout-aside__menu {
   flex: 1;
 
+  // 菜单滚动条样式
   .el-scrollbar__bar {
     &.is-vertical {
       right: 0px;
@@ -247,12 +248,6 @@ $w: 8, 16;
     width: 100%;
   }
 
-  .el-submenu.is-opened {
-    .el-menu-item {
-      background-color: var(--subBackgroundColor);
-    }
-  }
-
   // 非弹出层菜单添加右边框
   .el-menu-item {
     &::after {
@@ -272,6 +267,23 @@ $w: 8, 16;
         opacity: 1;
         transition: transform 0.15s cubic-bezier(0.645, 0.045, 0.355, 1),
           opacity 0.15s cubic-bezier(0.645, 0.045, 0.355, 1);
+      }
+    }
+  }
+
+  // 暗黑菜单
+  &--dark {
+    .el-submenu .el-menu-item,
+    .nest-menu .el-submenu > .el-submenu__title {
+      background-color: var(--subBackgroundColor) !important;
+      &:hover {
+        background-color: hsla(0, 0%, 90%, 1) !important;
+      }
+    }
+
+    .el-submenu .el-menu-item {
+      &.is-active {
+        background-color: hsla(0, 0%, 90%, 1) !important;
       }
     }
   }
@@ -333,7 +345,7 @@ $w: 8, 16;
   display: flex;
   justify-content: space-between;
   width: var(--width, 100%);
-  height: var(--height, 80px);
+  height: var(--height, 60px);
   background-color: var(--backgroundColor);
   box-shadow: 2px 0 6px rgb(0 21 41 / 35%);
   transition: flex-basis 280ms ease-in-out;
@@ -487,7 +499,7 @@ $w: 8, 16;
   &.el-breadcrumb {
     display: inline-block;
     font-size: 14px;
-    line-height: var(--height, 80px);
+    line-height: var(--height, 60px);
     margin-left: 8px;
   }
 

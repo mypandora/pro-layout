@@ -82,7 +82,7 @@ export default {
     },
     sideWidth: {
       type: Number,
-      default: 208,
+      default: 200,
     },
     sideCollpaseWidth: {
       type: Number,

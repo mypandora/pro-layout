@@ -113,7 +113,13 @@ export default {
         >
           {item.meta && <app-item slot="title" icon={item.meta && item.meta.icon} title={item.meta.title} />}
           {item.children.map((child) => (
-            <sidebar-item key={child.path} is-nest={true} item={child} base-path={this.resolvePath(child.path)} />
+            <sidebar-item
+              key={child.path}
+              is-nest={true}
+              item={child}
+              base-path={this.resolvePath(child.path)}
+              class="nest-menu"
+            />
           ))}
         </el-submenu>
       </div>

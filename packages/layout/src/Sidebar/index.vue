@@ -73,7 +73,7 @@ export default {
       'mypandora-layout-aside__menu--dark': isDark,
     };
 
-    const lightTheme = this.convertHexToRGBA(theme, 0.1);
+    const lightTheme = isDark ? '#ffffff' : this.convertHexToRGBA(theme, 0.1);
     const styleMenuObj = {
       '--lightTheme': lightTheme,
     };
