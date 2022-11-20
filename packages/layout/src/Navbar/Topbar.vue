@@ -69,28 +69,24 @@ export default {
       this.checkRightBtn();
     }, 1000);
   },
-  beforeMount() {
-    window.addEventListener('resize', this.handlerResize);
-  },
   mounted() {
-    this.getWrapperWidth();
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.handlerResize);
+    const resizeObserver = new ResizeObserver(() => this.handlerResize());
+    resizeObserver.observe(document.querySelector('.mypandora-layout-header__menu'));
   },
   methods: {
     handlerResize() {
       this.getWrapperWidth();
-      this.$nextTick(() => {
-        this.checkLeftBtn();
-        this.checkRightBtn();
-      });
+      this.checkLeftBtn();
+      this.checkRightBtn();
     },
     // 计算包装菜单的 div 的宽度，方便使用左右箭头
     getWrapperWidth() {
       const ele = document.querySelector('.mypandora-layout-header__menu');
       const eleRect = ele?.getBoundingClientRect();
-      const width = eleRect.width - 30 - 30;
+      let width = 0;
+      if (eleRect) {
+        width = eleRect.width - 30 - 30 || 0;
+      }
 
       const style = { width: `${width}px` };
       this.styleWrapper = style;
