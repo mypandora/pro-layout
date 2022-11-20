@@ -112,7 +112,7 @@ export default {
           popper-append-to-body
         >
           {item.meta && <app-item slot="title" icon={item.meta && item.meta.icon} title={item.meta.title} />}
-          {item.children.map((child) => (
+          {item.children?.map((child) => (
             <sidebar-item
               key={child.path}
               is-nest={true}

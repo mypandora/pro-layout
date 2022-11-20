@@ -15,6 +15,10 @@
   float: left;
 }
 
+.w120 {
+  width: 120px;
+}
+
 // 按钮
 .top-menu-btn {
   position: absolute;
@@ -151,7 +155,7 @@ $w: 8, 16;
   align-items: center;
   padding: 16px;
   color: var(--color);
-  background-color: var(--backgroundColor);
+  background-color: var(--backgroundColor, #ffffff);
   cursor: pointer;
   transition: padding 0.28s cubic-bezier(0.645, 0.045, 0.355, 1);
 

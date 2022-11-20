@@ -23,12 +23,16 @@ export default {
     if (title) {
       if (title.length > 5) {
         vnodes.push(
-          <span slot="title" title={title}>
+          <span slot="title" title={title} class="text-ellipsis">
             {title}
           </span>,
         );
       } else {
-        vnodes.push(<span slot="title">{title}</span>);
+        vnodes.push(
+          <span slot="title" class="text-ellipsis">
+            {title}
+          </span>,
+        );
       }
     }
     return vnodes;

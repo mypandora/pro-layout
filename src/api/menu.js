@@ -10,7 +10,7 @@ export const getRoutes = () => {
           redirect: 'noRedirect',
           component: 'Layout',
           alwaysShow: true,
-          meta: { title: '系统管理', icon: 'system', noCache: false, link: null },
+          meta: { title: '系统8888888888888管理', icon: 'system', noCache: false, link: null },
           children: [
             {
               name: 'Dept',
@@ -195,7 +195,7 @@ export const getRoutes = () => {
               name: 'Job',
               path: 'job',
               hidden: false,
-              component: 'monitor/job/index',
+              component: 'demo',
               meta: { title: '定时任务', icon: 'job', noCache: false, link: null },
             },
           ],

@@ -57,8 +57,8 @@ export default {
     styleOffset() {
       const { topMenus, offsetIndex, styleWrapper } = this;
       const len = topMenus.length;
-      const width = `${Math.max(len * 130, styleWrapper?.width)}px`;
-      const offset = `${offsetIndex * 130}px`;
+      const width = `${Math.max(len * 120, styleWrapper?.width)}px`;
+      const offset = `${offsetIndex * 120}px`;
 
       return { width, transform: `translate(${offset})`, transition: '0.3s ease' };
     },

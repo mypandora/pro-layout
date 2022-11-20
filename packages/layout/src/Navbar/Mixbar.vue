@@ -9,7 +9,7 @@
     >
       <template v-for="(item, index) in mixMenus">
         <el-menu-item v-if="index < visibleNumber" :key="index" :index="item.path" :disabled="!item.children">
-          <item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
+          <app-item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
         </el-menu-item>
       </template>
 
@@ -31,14 +31,14 @@
 </template>
 
 <script>
-import Item from './Item.vue';
+import AppItem from './Item.vue';
 import { getGrayReversedColor } from '../utils';
 // 隐藏侧边栏路由
 const hideList = ['/index', '/user/profile'];
 
 export default {
   name: 'MixNav',
-  components: { Item },
+  components: { AppItem },
   inject: ['$computedProperty'],
   data() {
     return {

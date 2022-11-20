@@ -85,10 +85,10 @@ export default {
       const index = this.resolvePath(this.onlyOneChild.path);
       return (
         this.onlyOneChild.meta && (
-          <div class="fl">
+          <div class="fl w120">
             <el-menu-item index={index} class={{ 'submenu-title-noDropdown': !isNest }}>
               <app-link to={this.resolvePath(this.onlyOneChild.path, this.onlyOneChild.query)}>
-                <span class="text-ellipsis">
+                <span>
                   <app-item
                     icon={this.onlyOneChild.meta.icon || (item.meta && item.meta.icon)}
                     title={this.onlyOneChild.meta.title}
@@ -102,7 +102,7 @@ export default {
     }
 
     return (
-      <div class="fl">
+      <div class="fl w120">
         <el-submenu
           ref="topSubMenu"
           index={this.resolvePath(item.path)}
