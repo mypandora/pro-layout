@@ -8,7 +8,7 @@
     @onDevice="handleDevice"
   >
     <template v-slot:logo>
-      <img :src="logoSrc" class="logo" />
+      <img :src="logoSrc" />
     </template>
 
     <template v-slot:rightMenu>
@@ -42,6 +42,10 @@
         </el-dropdown>
       </div>
     </template>
+
+    <main>
+      <router-view />
+    </main>
   </pro-layout>
 </template>
 
@@ -79,7 +83,7 @@ export default {
         sideTheme: 'theme-light', // 整体风格设置：亮色菜单风格、暗色菜单风格
         theme: '#2E59A7', // 主题色
 
-        navMode: 'side', // 导航模式：侧边菜单布局、顶部菜单布局、混合菜单布局
+        navMode: 'top', // 导航模式：侧边菜单布局、顶部菜单布局、混合菜单布局
         fixedHeader: false, // 固定Header
         fixedSide: false, // 固定侧边菜单
         autoMenu: false, // 自动分割菜单
@@ -142,11 +146,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.logo {
-  display: inline-block;
-  height: 32px;
-  vertical-align: middle;
-}
 .right-menu {
   display: flex;
   align-items: center;

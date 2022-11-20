@@ -10,7 +10,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath: './',
+  publicPath: '/',
   productionSourceMap: false,
   devServer: {
     historyApiFallback: true,

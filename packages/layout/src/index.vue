@@ -1,52 +1,42 @@
 <template>
-  <div :class="classObj" class="mypandora-pro-layout" :style="{ '--theme': settings.theme }">
-    <div
-      v-if="device === 'mobile' && sidebar.opened"
-      class="mypandora-pro-layout-drawer-bg"
-      @click="handleClickOutside"
-    />
+  <div :class="classObj" :style="{ '--theme': settings.theme }">
+    <!-- 移动模式下背景色 -->
+    <div v-if="device === 'mobile' && sidebar.opened" class="mypandora-layout--drawer-bg" @click="handleClickOutside" />
+
+    <!-- 左侧菜单栏及固定状态下它的占位符 -->
     <transition name="mypandora-ltf">
-      <sidebar v-show="showSide" @toggleSidebar="toggleSidebar" />
+      <sidebar v-show="showSide" @toggleSidebar="toggleSidebar" :style="styleSidebarObj" />
     </transition>
     <div
       v-if="settings.fixedSide && showSide"
-      class="sidebar-placeholder"
-      :style="{
-        width: `${sidebar.opened ? sideWidth : sideCollpaseWidth}px`,
-      }"
+      class="mypandora-layout-aside--placeholder"
+      :style="styleSidebarObj"
     ></div>
 
-    <section :class="{ fixedHeader: settings.fixedHeader }" class="mypandora-layout-container">
+    <section class="mypandora-layout-container">
       <transition name="el-zoom-in-top">
-        <navbar v-if="settings.showHeader" @setSidebarRoutes="setSidebarRoutes" />
+        <navbar v-if="settings.showHeader" @setSidebarRoutes="setSidebarRoutes" :style="styleHeaderObj" />
       </transition>
       <div
         v-if="(settings.fixedHeader || settings.navMode === 'mix') && settings.showHeader"
-        class="header-placeholder"
-        :style="{ height: settings.fixedHeader || settings.navMode === 'mix' ? '60px' : 0 }"
+        class="mypandora-layout-header--placeholder"
+        :style="styleHeaderObj"
       ></div>
-      <transition name="el-zoom-in-top">
-        <slot v-if="settings.showTagsView" name="tagsView"></slot>
-      </transition>
-      <app-main :tagsView="tagsView" />
+
+      <slot></slot>
     </section>
 
-    <settings
-      :predefine="predefine"
-      :settings="settings"
-      @changeSetting="handleSetting"
-      @setSidebarRoutes="setSidebarRoutes"
-    />
+    <settings @changeSetting="handleSetting" @setSidebarRoutes="setSidebarRoutes" />
 
     <!-- 隐藏顶部时 -->
-    <div v-if="!settings.showHeader" class="mypandora-pro-layout-setting" @click.stop="handleClick">
+    <div v-if="!settings.showHeader" class="mypandora-layout__setting" @click.stop="handleClick">
       <i class="el-icon-setting"></i>
     </div>
 
     <!-- mobile 时 -->
     <hamburger
       v-if="device === 'mobile' && !sidebar.opened && settings.navMode !== 'top'"
-      class="mypandora-pro-layout-hamburger"
+      class="mypandora-layout__hamburger"
       :class="{ 'theme-dark': settings.sideTheme === 'theme-dark' }"
       @toggleClick="toggleSidebar"
     />
@@ -54,7 +44,6 @@
 </template>
 
 <script>
-import AppMain from './AppMain.vue';
 import Navbar from './Navbar/index.vue';
 import Sidebar from './Sidebar';
 import Settings from './Settings';
@@ -67,7 +56,6 @@ const WIDTH = 992; // refer to Bootstrap's responsive design
 export default {
   name: 'ProLayout',
   components: {
-    AppMain,
     Navbar,
     Sidebar,
     Settings,
@@ -88,9 +76,13 @@ export default {
       type: String,
       default: '',
     },
+    headerHeight: {
+      type: Number,
+      default: 60,
+    },
     sideWidth: {
       type: Number,
-      default: 200,
+      default: 208,
     },
     sideCollpaseWidth: {
       type: Number,
@@ -106,7 +98,21 @@ export default {
     },
     settings: {
       type: Object,
-      default: () => ({}),
+      default: () => ({
+        showSettings: false, // 显示配置项
+
+        sideTheme: 'theme-light', // 整体风格设置：亮色菜单风格、暗色菜单风格
+        theme: '#2E59A7', // 主题色
+
+        navMode: 'mix', // 导航模式：侧边菜单布局、顶部菜单布局、混合菜单布局
+        fixedHeader: true, // 固定Header
+        fixedSide: true, // 固定侧边菜单
+        autoMenu: true, // 自动分割菜单
+
+        showHeader: true, // 显示顶栏
+        showSide: true, // 显示菜单，即显示侧边菜单
+        showLogo: true, // 显示Logo
+      }),
     },
     tagsView: {
       type: Object,
@@ -132,11 +138,11 @@ export default {
         logoTitle,
         sideWidth,
         sideCollpaseWidth,
+        headerHeight,
         menuRoutes,
         sidebarRoutes,
         predefine,
         settings,
-        tagsView,
       } = this;
       return {
         $slots,
@@ -145,11 +151,11 @@ export default {
         logoTitle,
         sideWidth,
         sideCollpaseWidth,
+        headerHeight,
         menuRoutes,
         sidebarRoutes,
         predefine,
         settings,
-        tagsView,
       };
     },
     classObj() {
@@ -172,9 +178,10 @@ export default {
       const hideSidebar = !showSide;
 
       return {
-        'mypandora-pro-layout-side': navMode === 'side',
-        'mypandora-pro-layout-top': navMode === 'top',
-        'mypandora-pro-layout-mix': navMode === 'mix',
+        'mypandora-pro-layout': true,
+        'mypandora-pro-layout--aside': navMode === 'aside',
+        'mypandora-pro-layout--top': navMode === 'top',
+        'mypandora-pro-layout--mix': navMode === 'mix',
         closeSidebar,
         openSidebar,
         hideSidebar,
@@ -208,6 +215,41 @@ export default {
       // 为 desktop 模式下
       return true;
     },
+    styleSidebarObj() {
+      const { sideWidth, sideCollpaseWidth, settings, headerHeight, sidebar, device } = this;
+      const { navMode } = settings;
+
+      let paddingTop = 0;
+      if (device === 'mobile') {
+        paddingTop = 0;
+      } else {
+        paddingTop = navMode === 'mix' ? `${headerHeight}px` : 0;
+      }
+
+      return {
+        '--width': `${sidebar.opened ? sideWidth : sideCollpaseWidth}px`,
+        '--paddingTop': paddingTop,
+      };
+    },
+    styleHeaderObj() {
+      const { settings, sidebar, sideWidth, sideCollpaseWidth, device, headerHeight } = this;
+      const { navMode, fixedHeader, showSide } = settings;
+      const { opened } = sidebar;
+
+      if (device === 'mobile') {
+        return { width: '100%' };
+      }
+
+      if (navMode === 'aside' && showSide && fixedHeader) {
+        if (opened) {
+          return { width: `calc(100% - ${sideWidth}px)` };
+        } else {
+          return { width: `calc(100% - ${sideCollpaseWidth}px)` };
+        }
+      }
+
+      return { '--width': '100%', '--height': `${headerHeight}px` };
+    },
   },
   watch: {
     $route(route) {
@@ -225,7 +267,7 @@ export default {
      */
     init() {
       const { autoMenu, navMode } = this.settings;
-      if (navMode === 'side' || (navMode === 'mix' && !autoMenu)) {
+      if (navMode === 'aside' || (navMode === 'mix' && !autoMenu)) {
         this.sidebarRoutes = this.menuRoutes;
       }
     },
@@ -246,12 +288,16 @@ export default {
       this.sidebar.withoutAnimation = withoutAnimation;
     },
     setSidebarRoutes(routes) {
-      // 如果没有路由信息，就使用默认的全部。
-      // 当模式为 mix 时，启用自动分割菜单的话，把非一级菜单设置为左侧菜单列。
-      if (Array.isArray(routes)) {
-        this.sidebarRoutes = routes;
-      } else {
-        // 当模式为 side，mix但不为自动分割菜单的话，使用所有。
+      const { settings } = this;
+      const { navMode, autoMenu } = settings;
+
+      if (navMode === 'mix') {
+        if (autoMenu && Array.isArray(routes)) {
+          this.sidebarRoutes = routes;
+        } else {
+          this.sidebarRoutes = this.menuRoutes;
+        }
+      } else if (navMode === 'aside') {
         this.sidebarRoutes = this.menuRoutes;
       }
     },

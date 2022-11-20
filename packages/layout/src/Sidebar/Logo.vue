@@ -12,29 +12,42 @@ export default {
   },
   render() {
     const { rootProps } = this;
-    const { $slots, logoTitle, sidebar } = rootProps;
+    const { $slots, logoTitle, sidebar, settings } = rootProps;
     const collapse = !sidebar.opened;
+    const { theme, sideTheme } = settings;
 
     const classObj = {
-      'mypandora-layout-side-logo': true,
-      'mypandora-layout-side-logo-collapse': collapse,
+      'mypandora-layout-aside__logo': true,
+      'mypandora-layout-aside__logo--collapse': collapse,
+    };
+
+    const styleObj = {
+      '--color': sideTheme === 'theme-light' ? theme : '#ffffff',
     };
 
     const { logo, logoRender } = $slots;
     let content = null;
 
     if (logoRender) {
-      content = logoRender;
+      if (collapse) {
+        content = logo;
+      } else {
+        content = logoRender;
+      }
     } else {
       content = (
-        <router-link to="/">
+        <router-link to="/" class="text-a">
           {logo}
-          <transition name="el-zoom-in-center">{!collapse && <h1>{logoTitle}</h1>}</transition>
+          {!collapse && <h1>{logoTitle}</h1>}
         </router-link>
       );
     }
 
-    return <div class={classObj}>{content}</div>;
+    return (
+      <div class={classObj} style={styleObj}>
+        {content}
+      </div>
+    );
   },
 };
 </script>

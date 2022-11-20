@@ -24,7 +24,7 @@ export default {
       if (title.length > 5) {
         vnodes.push(
           <span slot="title" title={title}>
-            {title.substring(0, 5) + '...'}
+            {title}
           </span>,
         );
       } else {

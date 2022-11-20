@@ -8,10 +8,6 @@ export default {
   name: 'TopbarItem',
   components: { AppItem, AppLink },
   props: {
-    device: {
-      type: String,
-      default: 'desktop',
-    },
     // route object
     item: {
       type: Object,
@@ -73,44 +69,52 @@ export default {
     },
   },
   render() {
-    const { item, hasOneShowingChild, resolvePath, device } = this;
-    const { hidden, meta = {}, path, children, alwaysShow, menuType } = item;
+    const { item, isNest } = this;
 
-    const hasOne = hasOneShowingChild(children, item);
-    const { onlyOneChild } = this;
-
-    const only =
-      (hasOne && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !alwaysShow) || menuType === 'C';
-
-    if (hidden) {
-      return <span></span>;
+    if (item.hidden) {
+      return;
     }
 
+    const only =
+      (this.hasOneShowingChild(item.children, item) &&
+        (!this.onlyOneChild.children || this.onlyOneChild.noShowingChildren) &&
+        !item.alwaysShow) ||
+      item.menuType === 'C';
+
     if (only) {
+      const index = this.resolvePath(this.onlyOneChild.path);
       return (
-        onlyOneChild.meta && (
-          <el-menu-item index={resolvePath(onlyOneChild.path)}>
-            <app-link to={resolvePath(onlyOneChild.path, onlyOneChild.query)}>
-              <div>
-                <app-item
-                  icon={onlyOneChild.meta.icon || (item.meta && item.meta.icon)}
-                  title={onlyOneChild.meta.title}
-                />
-              </div>
-            </app-link>
-          </el-menu-item>
+        this.onlyOneChild.meta && (
+          <div class="fl">
+            <el-menu-item index={index} class={{ 'submenu-title-noDropdown': !isNest }}>
+              <app-link to={this.resolvePath(this.onlyOneChild.path, this.onlyOneChild.query)}>
+                <span class="text-ellipsis">
+                  <app-item
+                    icon={this.onlyOneChild.meta.icon || (item.meta && item.meta.icon)}
+                    title={this.onlyOneChild.meta.title}
+                  />
+                </span>
+              </app-link>
+            </el-menu-item>
+          </div>
         )
       );
     }
 
-    const childrenItem = children.map((child) => (
-      <topbar-item key={child.path} is-nest={true} item={child} base-path={resolvePath(child.path)} device={device} />
-    ));
     return (
-      <el-submenu ref="topSubMenu" index={resolvePath(path)} popper-append-to-body={false}>
-        <div slot="title">{meta && <app-item title={item.meta.title} />}</div>
-        {childrenItem}
-      </el-submenu>
+      <div class="fl">
+        <el-submenu
+          ref="topSubMenu"
+          index={this.resolvePath(item.path)}
+          popper-class="mypandora-layout-header__popper-menu"
+          popper-append-to-body
+        >
+          {item.meta && <app-item slot="title" icon={item.meta && item.meta.icon} title={item.meta.title} />}
+          {item.children.map((child) => (
+            <topbar-item key={child.path} is-nest={true} item={child} base-path={this.resolvePath(child.path)} />
+          ))}
+        </el-submenu>
+      </div>
     );
   },
 };

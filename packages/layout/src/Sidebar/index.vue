@@ -24,50 +24,74 @@ export default {
       }
       return path;
     },
-    variables() {
-      return variables;
-    },
   },
   methods: {
     toggleSidebar() {
       this.$emit('toggleSidebar');
     },
+    convertHexToRGBA(hexCode, opacity = 1) {
+      let hex = hexCode.replace('#', '');
+
+      if (hex.length === 3) {
+        hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+      }
+
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+
+      if (opacity > 1 && opacity <= 100) {
+        opacity = opacity / 100;
+      }
+
+      return `rgba(${r},${g},${b},${opacity})`;
+    },
   },
   render() {
     const { rootProps, settings, activeMenu } = this;
-    const { sideWidth, sideCollpaseWidth, sidebar, sidebarRoutes } = rootProps;
+    const { sidebar, sidebarRoutes } = rootProps;
     const { sideTheme, fixedSide, theme, uniqueOpened: unique, showLogo: show, navMode } = settings;
     const showLogo = show && navMode !== 'mix';
     const sidebarOpened = sidebar.opened;
     const isCollapse = !sidebarOpened;
     const uniqueOpened = unique || false;
+    const isDark = sideTheme === 'theme-dark';
 
     const classObj = {
-      'mypandora-layout-side': true,
-      'mypandora-layout-side-dark': sideTheme === 'theme-dark',
-      'mypandora-layout-side-light': sideTheme === 'theme-light',
-      'mypandora-layout-side-fixed': fixedSide,
-    };
-
-    const classHamburgerObj = {
-      'mypandora-layout-side-hamburger': true,
-      'mypandora-layout-side-hamburger-dark': sideTheme === 'theme-dark',
+      'mypandora-layout-aside': true,
+      'mypandora-layout-aside--dark': isDark,
+      'mypandora-layout-aside--fixed': fixedSide,
     };
 
     const styleObj = {
-      width: `${sidebarOpened ? sideWidth : sideCollpaseWidth}px`,
-      paddingTop: settings.navMode === 'mix' ? '60px' : 0,
-      '--color': sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor,
-      '--backgroundColor': sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground,
-      '--subBackgroundColor': sideTheme === 'theme-dark' ? variables.subMenuBackground : variables.menuLightBackground,
+      '--backgroundColor': isDark ? variables.menuBackground : variables.menuLightBackground,
+      '--subBackgroundColor': isDark ? variables.subMenuBackground : variables.menuLightBackground,
+    };
+
+    const classMenuObj = {
+      'mypandora-layout-aside__menu': true,
+      'mypandora-layout-aside__menu--dark': isDark,
+    };
+
+    const lightTheme = this.convertHexToRGBA(theme, 0.1);
+    const styleMenuObj = {
+      '--lightTheme': lightTheme,
+    };
+    // hack popper-menu
+    document.documentElement.style.setProperty('--theme', theme);
+    document.documentElement.style.setProperty('--lightTheme', lightTheme);
+
+    const classHamburgerObj = {
+      'mypandora-layout-aside__hamburger': true,
+      'mypandora-layout-aside__hamburger--dark': isDark,
     };
 
     const elMenu = (
       <el-menu
         default-active={activeMenu}
         collapse={isCollapse}
-        background-color={sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground}
-        text-color={sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor}
+        background-color={isDark ? variables.menuBackground : variables.menuLightBackground}
+        text-color={isDark ? variables.menuColor : variables.menuLightColor}
         unique-opened={uniqueOpened}
         active-text-color={theme}
         collapse-transition={false}
@@ -82,11 +106,13 @@ export default {
       <aside class={classObj} style={styleObj}>
         <el-collapse-transition>{showLogo && <logo />}</el-collapse-transition>
         {fixedSide ? (
-          <el-scrollbar class="mypandora-layout-side-menu" wrap-class="hidden-x">
+          <el-scrollbar class={classMenuObj} style={styleMenuObj} wrap-class="hidden-x">
             {elMenu}
           </el-scrollbar>
         ) : (
-          <div class="mypandora-layout-side-menu">{elMenu}</div>
+          <div class={classMenuObj} style={styleMenuObj}>
+            {elMenu}
+          </div>
         )}
 
         <hamburger class={classHamburgerObj} is-active={sidebarOpened} vOn:toggleClick={this.toggleSidebar} />

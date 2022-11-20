@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100vh">我是页面测试组件</div>
+  <div>我是页面测试组件: {{ this.$route.meta?.title }}</div>
 </template>
 
 <script>

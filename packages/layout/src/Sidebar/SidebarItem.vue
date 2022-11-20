@@ -87,16 +87,18 @@ export default {
       const index = this.resolvePath(this.onlyOneChild.path);
       return (
         this.onlyOneChild.meta && (
-          <el-menu-item index={index} class={{ 'submenu-title-noDropdown': !isNest }}>
-            <app-link to={this.resolvePath(this.onlyOneChild.path, this.onlyOneChild.query)}>
-              <span>
-                <app-item
-                  icon={this.onlyOneChild.meta.icon || (item.meta && item.meta.icon)}
-                  title={this.onlyOneChild.meta.title}
-                />
-              </span>
-            </app-link>
-          </el-menu-item>
+          <div>
+            <el-menu-item index={index} class={{ 'submenu-title-noDropdown': !isNest }}>
+              <app-link to={this.resolvePath(this.onlyOneChild.path, this.onlyOneChild.query)}>
+                <span>
+                  <app-item
+                    icon={this.onlyOneChild.meta.icon || (item.meta && item.meta.icon)}
+                    title={this.onlyOneChild.meta.title}
+                  />
+                </span>
+              </app-link>
+            </el-menu-item>
+          </div>
         )
       );
     }
@@ -106,7 +108,7 @@ export default {
         <el-submenu
           ref="subMenu"
           index={this.resolvePath(item.path)}
-          popper-class="mypandora-layout-side-popper-menu"
+          popper-class="mypandora-layout-aside__popper-menu"
           popper-append-to-body
         >
           {item.meta && <app-item slot="title" icon={item.meta && item.meta.icon} title={item.meta.title} />}

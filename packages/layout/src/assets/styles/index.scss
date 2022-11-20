@@ -1,24 +1,33 @@
 @import './variables.module';
 
-
-.mypandora-ltf-enter,
-.mypandora-ltf-enter-to {
-  transform: translate(-100%, 0px);
-}
-
-a,
-a:focus,
-a:hover {
-  cursor: pointer;
-  color: inherit;
-  text-decoration: none;
-}
-
 // 文字省略号
 .text-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.text-a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fl {
+  float: left;
+}
+
+// 按钮
+.top-menu-btn {
+  position: absolute;
+  top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 100%;
+  font-size: 22px;
+  background-color: var(--backgroundColor);
+  cursor: pointer;
+  z-index: 999;
 }
 
 // 原生水平的滚动条无法通过margin-bottom为负值来把它挤出可视区
@@ -49,184 +58,104 @@ $w: 8, 16;
   }
 }
 
-// ---------- layout ----------
+// ----------------------------------------------------------------------------
+// 布局
 .#{$css-prefix}-pro-layout {
   position: relative;
   height: 100%;
   width: 100%;
 
-  &-side,
-  &-top,
-  &-mix {
+  &--aside,
+  &--top,
+  &--mix {
     display: flex;
     flex-flow: row wrap;
   }
 }
 
-.#{$css-prefix}-pro-layout-side,
-.#{$css-prefix}-pro-layout-mix {
-  &.openSidebar {
-    .el-menu-item,
-    .el-submenu__title {
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-    }
-  }
-
-  &.closeSidebar {
-    .el-submenu {
-      overflow: hidden;
-
-      & > .el-submenu__title {
-        & > span {
-          overflow: hidden;
-          visibility: hidden;
-          display: inline-block;
-        }
-      }
-    }
-    // 其实与上面的 span 的兄弟节点
-    .el-submenu__icon-arrow {
-      display: none;
-    }
-  }
-}
-
-.#{$css-prefix}-pro-layout-top,
-.#{$css-prefix}-pro-layout-mix {
-  i.el-submenu__icon-arrow {
-    display: none;
-  }
-}
-
-.#{$css-prefix}-pro-layout-top {
-  .topmenu-container {
-    flex: 1;
-    position: relative;
-    padding-left: 30px;
-    padding-right: 30px;
-    overflow: hidden;
-
-    .topmenu-wrapper {
-      overflow: hidden;
-      > ul > a {
-        float: left;
-      }
-    }
-
-    // 按钮
-    .top-menu-btn {
-      position: absolute;
-      top: 0px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 100%;
-      font-size: 22px;
-      background-color: #{'var(--theme)'};
-      cursor: pointer;
-      z-index: 999;
-    }
-  }
-}
-.#{$css-prefix}-pro-layout-mix {
-  .mixmenu-container {
-    flex: 1;
-  }
-}
-
-// 主要是对 element-ui 原样式的覆盖
-.#{$css-prefix}-pro-layout-top,
-.#{$css-prefix}-pro-layout-mix {
-  // 原样式有底部边框，而我们这里不需要(因为我们导航的左有图片、右有自定义内容，而这些内容没有下边框)，隐藏。
-  .el-menu.el-menu--horizontal {
-    border-bottom: none;
-  }
-}
-
-// ----------------------------------------------------------------------------
-.#{$css-prefix}-layout-container {
-  position: relative;
-  min-height: 100%;
-  min-width: 0;
-  flex: 1;
-  background-color: #f0f2f7;
-  transition: flex-basis 280ms ease-in-out;
-
+// 当隐藏顶部导航时，导致我们无法再设置了，添加一个固定图标方便找回。
+.#{$css-prefix}-layout__setting {
+  position: fixed;
+  inset-block-start: 240px;
+  inset-inline-end: 0px;
+  z-index: 1000;
   display: flex;
-  flex-direction: column;
-}
-
-.#{$css-prefix}-layout-header {
-  overflow: hidden;
-  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: 16px;
+  color: #fff;
   background-color: var(--theme);
-  box-shadow: 2px 0 6px rgb(0 21 41 / 35%);
-  transition: flex-basis 280ms ease-in-out;
-
-  display: flex;
-  justify-content: space-between;
-  height: 60px;
-
-  &-fixed {
-    position: fixed;
-    top: 0;
-    right: 0;
-    transition: width 0.28s;
-    z-index: 1001;
-  }
+  border-end-start-radius: 4px;
+  border-start-start-radius: 4px;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
-.#{$css-prefix}-layout-main {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  transition: flex-basis 280ms ease-in-out;
+// 当手机模式时，显示左侧菜单控制图标
+.#{$css-prefix}-layout__hamburger {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  cursor: pointer;
+}
+
+// 当手机模式时，覆盖层。
+.#{$css-prefix}-layout--drawer-bg {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.3;
+  z-index: 1001;
 }
 
 // ----------------------------------------------------------------------------
-// 侧边栏
-.#{$css-prefix}-layout-side {
+// aside
+.#{$css-prefix}-layout-aside {
   display: flex;
   flex-direction: column;
-  background-color: var(--backgroundColor);
-  transition: width 0.28s;
-  z-index: 1001;
+  width: var(--width, 200px);
+  padding-top: var(--paddingTop, 0);
+  background-color: var(--backgroundColor, #ffffff);
+  border-right: 1px solid #dcdfe6;
   overflow: hidden;
+  transition: width 0.28s;
+  z-index: 999;
   box-sizing: border-box;
 
-  &-dark {
+  &--dark {
     border-right: none;
   }
-  &-light {
-    border-right: 1px solid #dcdfe6;
-  }
 
-  &-fixed {
+  &--fixed {
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
   }
 
-  .svg-icon {
-    margin-right: 8px;
+  &--placeholder {
+    width: var(--width, 200px);
+    padding-top: var(--paddingTop, 0);
   }
 }
 
-// 侧边栏 logo (顶部导航 logo)
-.#{$css-prefix}-layout-navbar-logo,
-.#{$css-prefix}-layout-side-logo {
+// asdie__logo, header__logo
+.#{$css-prefix}-layout-header__logo,
+.#{$css-prefix}-layout-aside__logo {
   position: relative;
   display: flex;
   align-items: center;
   padding: 16px;
+  color: var(--color);
   background-color: var(--backgroundColor);
   cursor: pointer;
   transition: padding 0.28s cubic-bezier(0.645, 0.045, 0.355, 1);
 
-  &-collapse {
+  &--collapse {
     padding: 16px 8px;
   }
 
@@ -255,14 +184,47 @@ $w: 8, 16;
   }
 }
 
-// 侧边栏 menu
-.#{$css-prefix}-layout-side-menu {
-  flex: 1;
+// aside__menu, aside__popper-menu
+.#{$css-prefix}-layout-aside__menu,
+.#{$css-prefix}-layout-aside__popper-menu {
+  // 覆盖默认 56px
+  .el-menu-item,
+  .el-submenu__title,
+  .el-submenu .el-menu-item {
+    height: 44px;
+    line-height: 44px;
 
-  // reset element-ui css
-  .horizontal-collapse-transition {
-    transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+    // 限制文本超出
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
+
+  // 图标与文本间距
+  .svg-icon {
+    margin-right: 16px;
+  }
+
+  // menu hover
+  // 指定背景色之后，需要自定义 hover 颜色
+  .el-submenu__title,
+  .el-menu-item {
+    &:hover {
+      color: var(--theme) !important;
+      background-color: var(--lightTheme) !important;
+    }
+  }
+
+  // 选中
+  .el-menu-item {
+    &.is-active {
+      background-color: var(--lightTheme) !important;
+    }
+  }
+}
+
+// asdie__menu
+.#{$css-prefix}-layout-aside__menu {
+  flex: 1;
 
   .el-scrollbar__bar {
     &.is-vertical {
@@ -274,46 +236,78 @@ $w: 8, 16;
     }
   }
 
+  // reset element-ui css
+  .horizontal-collapse-transition {
+    transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+  }
+
   .el-menu {
     border: none;
     height: 100%;
-    width: 100% !important;
-  }
-
-  // 默认56px太高了
-  .el-menu-item,
-  .el-submenu__title,
-  .el-submenu .el-menu-item {
-    height: 44px;
-    line-height: 44px;
+    width: 100%;
   }
 
   .el-submenu.is-opened {
     .el-menu-item {
-      background-color: var(--subBackgroundColor) !important;
+      background-color: var(--subBackgroundColor);
     }
   }
 
-  // menu hover
-  // 指定背景色之后，需要自定义 hover 颜色
-  .submenu-title-noDropdown,
-  .el-submenu__title {
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.06) !important;
+  // 非弹出层菜单添加右边框
+  .el-menu-item {
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      border-right: 3px solid var(--theme, #2e59a7);
+      transform: scaleY(0.0001);
+      opacity: 0;
+      transition: transform 0.15s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
+      content: '';
     }
-  }
-
-  & .el-submenu .el-menu-item {
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.06) !important;
+    &.is-active {
+      &::after {
+        transform: scaleY(1);
+        opacity: 1;
+        transition: transform 0.15s cubic-bezier(0.645, 0.045, 0.355, 1),
+          opacity 0.15s cubic-bezier(0.645, 0.045, 0.355, 1);
+      }
     }
   }
 }
 
-// 侧边栏 hamburger
-.#{$css-prefix}-layout-side-hamburger {
+.closeSidebar .el-menu--collapse {
+  .el-submenu {
+    > .el-submenu__title {
+      .el-submenu__icon-arrow {
+        display: none;
+      }
+    }
+  }
+  .submenu-title-noDropdown {
+    &::after {
+      display: none;
+    }
+  }
+}
+
+// aside__popper-menu
+.#{$css-prefix}-layout-aside__popper-menu {
+  // the scroll bar appears when the subMenu is too long
+  > .el-menu--popup {
+    width: 200px;
+    max-height: 100vh;
+    overflow-y: auto;
+
+    @extend .#{$css-prefix}-scrollbar;
+  }
+}
+
+// asdie__hamburger
+.#{$css-prefix}-layout-aside__hamburger {
   display: block;
-  padding: 8px 16px;
+  padding: 16px;
   border-top: 1px solid #dcdfe6;
   cursor: pointer;
   transition: background 0.28s;
@@ -322,7 +316,8 @@ $w: 8, 16;
   &:hover {
     background: rgba(0, 0, 0, 0.025);
   }
-  &-dark {
+
+  &--dark {
     fill: hsla(0, 0%, 100%, 0.65);
     border-top-color: rgba(255, 255, 255, 0.7);
     &:hover {
@@ -331,115 +326,173 @@ $w: 8, 16;
   }
 }
 
-// 侧边栏 popper
-// 菜单 close 时，鼠标移入才会有 popper，为了避免样式冲突，我们又加了一个自定义类：.mypandora-side-poper-menu
-.#{$css-prefix}-layout-side-popper-menu {
-  // 默认56px太高了
-  .el-menu-item,
-  .el-submenu__title,
-  .el-submenu .el-menu-item {
-    height: 44px;
-    line-height: 44px;
+// ----------------------------------------------------------------------------
+// header
+.#{$css-prefix}-layout-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: var(--width, 100%);
+  height: var(--height, 80px);
+  background-color: var(--backgroundColor);
+  box-shadow: 2px 0 6px rgb(0 21 41 / 35%);
+  transition: flex-basis 280ms ease-in-out;
+  overflow: hidden;
+
+  &--fixed {
+    position: fixed;
+    top: 0;
+    right: 0;
+    transition: width 0.28s;
+    z-index: 1000;
   }
 
-  .el-menu-item,
-  .el-submenu__title {
-    width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .svg-icon {
-    margin-right: 8px;
-  }
-
-  .el-menu-item {
-    &:hover {
-      // you can use $subMenuHover
-      background-color: rgba(0, 0, 0, 0.06) !important;
-    }
-  }
-
-  // the scroll bar appears when the subMenu is too long
-  > .el-menu--popup {
-    max-height: 100vh;
-    overflow-y: auto;
-
-    @extend .#{$css-prefix}-scrollbar;
+  &--placeholder {
+    width: var(--width, 100%);
+    height: var(--height, 0);
   }
 }
 
-// mobile responsive
-.mobile {
-  &.openSidebar .sidebar-container {
-    transition: transform 0.28s;
-    width: $base-sidebar-width !important;
+// header__menu
+.#{$css-prefix}-layout-header__menu {
+  flex: 1;
+  position: relative;
+  padding-left: 30px;
+  padding-right: 30px;
+  overflow: hidden;
+
+  // 原样式有底部边框，而我们这里不需要(因为我们导航的左有图片、右有自定义内容，而这些内容没有下边框)，隐藏。
+  .el-menu.el-menu--horizontal {
+    border-bottom: none;
   }
 
-  &.hideSidebar .sidebar-container {
+  // 设置高度，因为动态菜单，中间加了div，故原设置失效
+  .el-menu--horizontal .el-menu-item,
+  .el-menu--horizontal .el-submenu .el-submenu__title {
+    height: var(--height);
+    line-height: var(--height);
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    &:hover {
+      background-color: var(--backgroundColor) !important;
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0.4), 0 0 0 rgba(255, 255, 255, 0.1),
+        inset -2px -2px 12px rgba(255, 255, 255, 0.1), inset 2px 2px 12px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  // 隐藏右侧展开收缩图标，好看一点点
+  i.el-submenu__icon-arrow {
+    display: none;
+  }
+
+  .el-menu--horizontal .el-menu-item:not(.is-disabled):focus,
+  .el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
+    color: var(--color);
+  }
+
+  // 使用自定义的选中样式
+  .el-menu--horizontal .el-menu-item.is-active,
+  .el-menu--horizontal .el-submenu.is-active .el-submenu__title {
+    color: var(--color);
+    box-shadow: inset -2px -2px 12px rgba(255, 255, 255, 0.1), inset 2px 2px 12px rgba(0, 0, 0, 0.4);
+    border-bottom: 4px solid var(--color) !important;
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+      margin: auto;
+      border-width: 6px;
+      border-style: solid;
+      border-color: transparent var(--color) transparent transparent;
+      transform: rotate(90deg);
+    }
+  }
+}
+
+// header__popper-menu
+.#{$css-prefix}-layout-header__popper-menu {
+  > .el-menu--popup {
+    width: 200px;
+    max-height: calc(100vh - var(--height, 60px));
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    @extend .#{$css-prefix}-scrollbar;
+  }
+
+  .el-menu-item,
+  .el-submenu__title,
+  .el-submenu .el-menu-item {
+    width: 200px;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .el-menu-item.is-active {
+    color: var(--theme) !important;
+    background-color: #ffffff !important;
+  }
+}
+
+// header__right
+.#{$css-prefix}-layout-header__right {
+  display: flex;
+  align-items: center;
+}
+
+// ----------------------------------------------------------------------------
+.#{$css-prefix}-layout-container {
+  position: relative;
+  min-height: 100%;
+  min-width: 0;
+  flex: 1;
+  background-color: #f0f2f7;
+  transition: flex-basis 280ms ease-in-out;
+
+  display: flex;
+  flex-direction: column;
+}
+
+// ----------------------------------------------------------------------------
+// 移动模式
+.mobile.#{$css-prefix}-pro-layout {
+  &.openSidebar .#{$css-prefix}-layout-aside {
+    transition: transform 0.28s;
+    width: $base-sidebar-width !important;
+    border-right: none;
+    z-index: 1001;
+  }
+
+  &.hideSidebar .#{$css-prefix}-layout-aside {
     pointer-events: none;
     transition-duration: 0.3s;
     transform: translate3d(-200px, 0, 0);
   }
 }
-
-// ----------------------------------------------------------------------------
-.withoutAnimation {
-  .main-container,
-  .sidebar-container {
+.withoutAnimation.#{$css-prefix}-pro-layout {
+  .#{$css-prefix}-layout-aside,
+  .#{$css-prefix}-layout-container {
     transition: none;
   }
 }
 
 // ----------------------------------------------------------------------------
-// 当隐藏顶部导航时，导致我们无法再设置了，添加一个固定图标方便找回。
-.#{$css-prefix}-pro-layout-setting {
-  position: fixed;
-  inset-block-start: 240px;
-  inset-inline-end: 0px;
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  font-size: 16px;
-  color: #fff;
-  background-color: var(--theme);
-  border-end-start-radius: 4px;
-  border-start-start-radius: 4px;
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-// 当手机模式时，显示左侧菜单控制图标
-.#{$css-prefix}-pro-layout-hamburger {
-  position: absolute;
-  left: 16px;
-  bottom: 8px;
-  cursor: pointer;
-}
-// 当手机模式时，覆盖层。
-.#{$css-prefix}-pro-layout-drawer-bg {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  opacity: 0.3;
-  z-index: 999;
-}
-
 // 面包屑
 .#{$css-prefix}-breadcrumb {
   &.el-breadcrumb {
     display: inline-block;
     font-size: 14px;
+    line-height: var(--height, 80px);
     margin-left: 8px;
   }
 
   .no-redirect {
-    color: #ffffff;
+    color: var(--color, #ffffff);
     cursor: text;
   }
 

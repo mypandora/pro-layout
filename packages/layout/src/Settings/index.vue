@@ -37,8 +37,8 @@
 
       <h3 class="drawer-title">导航模式</h3>
       <el-tooltip effect="dark" content="侧边菜单布局" placement="top">
-        <div class="block-checkbox-item block-checkbox-item-dark fl" @click="handleSetting('navMode', 'side')">
-          <i v-show="settings.navMode === 'side'" class="block-checkbox-item-check"></i>
+        <div class="block-checkbox-item block-checkbox-item-dark fl" @click="handleSetting('navMode', 'aside')">
+          <i v-show="settings.navMode === 'aside'" class="block-checkbox-item-check"></i>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" content="顶部菜单布局" placement="top">
@@ -93,10 +93,6 @@
         <span>显示 Logo</span>
         <el-switch :value="settings.showLogo" @change="handleShowLogo" class="fr" />
       </div>
-      <div class="drawer-item">
-        <span>显示页签</span>
-        <el-switch :value="settings.showTagsView" @change="handleShowTagsView" class="fr" />
-      </div>
 
       <el-divider />
       <el-button size="small" type="primary" plain icon="el-icon-document-add" @click="saveSetting">保存配置</el-button>
@@ -142,9 +138,9 @@ export default {
         value,
       });
 
-      if (key === 'navMode' && (value === 'side' || value === 'top' || value === 'mix')) {
+      if (key === 'navMode' && (value === 'aside' || value === 'top' || value === 'mix')) {
         switch (value) {
-          case 'side':
+          case 'aside':
             this.$emit('setSidebarRoutes');
             if (this.settings.autoMenu) {
               this.$emit('changeSetting', {
@@ -333,14 +329,14 @@ export default {
   }
 
   &-dark:before,
-  &-side:before {
+  &-aside:before {
     z-index: 1;
     background-color: #001529;
     content: '';
   }
 
   &-dark:after,
-  &-side:after {
+  &-aside:after {
     background-color: #fff;
   }
 

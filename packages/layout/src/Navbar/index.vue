@@ -23,41 +23,50 @@ export default {
     setSidebarRoutes(routes) {
       this.$emit('setSidebarRoutes', routes);
     },
+    convertHexToRGBA(hexCode, opacity = 1) {
+      let hex = hexCode.replace('#', '');
+
+      if (hex.length === 3) {
+        hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+      }
+
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+
+      if (opacity > 1 && opacity <= 100) {
+        opacity = opacity / 100;
+      }
+
+      return `rgba(${r},${g},${b},${opacity})`;
+    },
   },
   render() {
     const { rootProps } = this;
-    const { $slots, sidebar, sideWidth, sideCollpaseWidth, device, settings } = rootProps;
-    const { opened } = sidebar;
-    const { theme, navMode, autoMenu, fixedHeader, showSide, showLogo } = settings;
+    const { $slots, settings } = rootProps;
+    const { theme, navMode, autoMenu, fixedHeader, showLogo } = settings;
 
     const rightMenu = $slots.rightMenu;
     const color = getGrayReversedColor(theme);
-
-    const style = { color, width: '100%' };
-    if (device === 'mobile') {
-      style.width = '100%';
-    } else if (navMode === 'side' && showSide && fixedHeader) {
-      if (opened) {
-        style.width = `calc(100% - ${sideWidth}px)`;
-      } else {
-        style.width = `calc(100% - ${sideCollpaseWidth}px)`;
-      }
-    }
+    const lightColor = this.convertHexToRGBA(color, 0.1);
 
     return (
       <header
         class={{
           'mypandora-layout-header': true,
-          'mypandora-layout-header-fixed': fixedHeader || navMode === 'mix',
-          'has-logo': showLogo && navMode !== 'side',
+          'mypandora-layout-header--fixed': fixedHeader || navMode === 'mix',
         }}
-        style={style}
+        style={{
+          '--color': color,
+          '--lightColor': lightColor,
+          '--backgroundColor': theme,
+        }}
       >
-        {navMode !== 'side' && showLogo && <logo />}
+        {navMode !== 'aside' && showLogo && <logo />}
         {navMode === 'top' && <topbar />}
         {navMode === 'mix' && autoMenu && <mixbar vOn:setSidebarRoutes={this.setSidebarRoutes} />}
-        {navMode === 'side' && <breadcrumb class="breadcrumb-container" />}
-        {rightMenu}
+        {navMode === 'aside' && <breadcrumb class="breadcrumb-container" />}
+        <div class="mypandora-layout-header__right">{rightMenu}</div>
       </header>
     );
   },

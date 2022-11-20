@@ -1,56 +1,10 @@
-<template>
-  <div class="topmenu-container" :style="{ '--theme': backgroundColor }">
-    <div ref="leftRef" class="top-menu-btn" style="left: 0px" @click="scrollLeft">
-      <i v-show="showLeftBtn" class="el-icon el-icon-arrow-left" />
-    </div>
-    <div class="topmenu-wrapper" :style="styleWrapper">
-      <el-menu
-        ref="topmenuRef"
-        :default-active="activeMenu"
-        :background-color="backgroundColor"
-        :text-color="textColor"
-        :unique-opened="true"
-        :active-text-color="textColor"
-        :collapse-transition="false"
-        mode="horizontal"
-        :style="styleOffset"
-      >
-        <template v-for="(item, index) in topMenus">
-          <el-submenu
-            v-if="!item.hidden"
-            :key="item.path + index"
-            :index="item.path"
-            :disabled="!item.children"
-            :style="{ '--theme': backgroundColor }"
-          >
-            <template slot="title">
-              <item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
-            </template>
-            <topbar-item
-              v-for="(route, index) in item.children"
-              :key="route.path + index"
-              :item="route"
-              :base-path="route.path.includes(item.path) ? route.path : item.path + '/' + route.path"
-              :device="device"
-            />
-          </el-submenu>
-        </template>
-      </el-menu>
-    </div>
-    <div ref="rightRef" class="top-menu-btn" style="right: 0px" @click="scrollRight">
-      <i v-show="showRightBtn" class="el-icon el-icon-arrow-right" />
-    </div>
-  </div>
-</template>
-
 <script>
 import { getGrayReversedColor } from '../utils';
 import TopbarItem from './TopbarItem';
-import Item from './Item.vue';
 
 export default {
   name: 'TopBar',
-  components: { Item, TopbarItem },
+  components: { TopbarItem },
   inject: ['$computedProperty'],
   data() {
     return {
@@ -65,9 +19,6 @@ export default {
   computed: {
     rootProps() {
       return this.$computedProperty();
-    },
-    device() {
-      return this.rootProps.device;
     },
     backgroundColor() {
       return this.rootProps.settings.theme;
@@ -137,7 +88,7 @@ export default {
     },
     // 计算包装菜单的 div 的宽度，方便使用左右箭头
     getWrapperWidth() {
-      const ele = document.querySelector('.topmenu-container');
+      const ele = document.querySelector('.mypandora-layout-header__menu');
       const eleRect = ele?.getBoundingClientRect();
       const width = eleRect.width - 30 - 30;
 
@@ -166,7 +117,6 @@ export default {
       const navRightEle = this.$refs.rightRef;
       const navRightRect = navRightEle?.getBoundingClientRect();
 
-      // console.log(navRightRect.left, menuRect.right);
       if (navRightRect?.left < menuRect?.right) {
         this.showRightBtn = true;
       } else {
@@ -187,6 +137,37 @@ export default {
         this.checkLeftBtn();
       }
     },
+  },
+  render() {
+    const { showLeftBtn, showRightBtn, styleWrapper, styleOffset, activeMenu, backgroundColor, textColor, menuRoutes } =
+      this;
+    return (
+      <div class="mypandora-layout-header__menu">
+        <div ref="leftRef" class="top-menu-btn" style="left: 0px" vOn:click={this.scrollLeft}>
+          {showLeftBtn && <i class="el-icon el-icon-arrow-left" />}
+        </div>
+        <div class="top-menu-wrapper" style={styleWrapper}>
+          <el-menu
+            ref="topmenuRef"
+            default-active={activeMenu}
+            background-color={backgroundColor}
+            text-color={textColor}
+            unique-opened={true}
+            active-text-color={textColor}
+            collapse-transition={false}
+            mode="horizontal"
+            style={styleOffset}
+          >
+            {menuRoutes.map((route, index) => (
+              <topbar-item key={route.path + index} item={route} base-path={route.path} />
+            ))}
+          </el-menu>
+        </div>
+        <div ref="rightRef" class="top-menu-btn" style="right: 0px" vOn:click={this.scrollRight}>
+          {showRightBtn && <i class="el-icon el-icon-arrow-right" />}
+        </div>
+      </div>
+    );
   },
 };
 </script>

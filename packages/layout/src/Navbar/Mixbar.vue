@@ -1,28 +1,33 @@
 <template>
-  <el-menu
-    class="mixmenu-container"
-    :default-active="activeMenu"
-    :background-color="backgroundColor"
-    :text-color="textColor"
-    mode="horizontal"
-    @select="handleSelect"
-  >
-    <template v-for="(item, index) in mixMenus">
-      <el-menu-item v-if="index < visibleNumber" :key="index" :index="item.path">
-        <item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
-      </el-menu-item>
-    </template>
-
-    <!-- 顶部菜单超出数量折叠 -->
-    <el-submenu v-if="mixMenus.length > visibleNumber" :style="{ '--theme': backgroundColor }" index="more">
-      <template slot="title">更多菜单</template>
+  <div class="mypandora-layout-header__menu">
+    <el-menu
+      :default-active="activeMenu"
+      :background-color="backgroundColor"
+      :text-color="textColor"
+      mode="horizontal"
+      @select="handleSelect"
+    >
       <template v-for="(item, index) in mixMenus">
-        <el-menu-item v-if="index >= visibleNumber" :key="index" :index="item.path">
+        <el-menu-item v-if="index < visibleNumber" :key="index" :index="item.path" :disabled="!item.children">
           <item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
         </el-menu-item>
       </template>
-    </el-submenu>
-  </el-menu>
+
+      <!-- 顶部菜单超出数量折叠 -->
+      <el-submenu
+        v-if="mixMenus.length > visibleNumber"
+        popper-class="mypandora-layout-header__popper-menu"
+        index="more"
+      >
+        <template slot="title">更多菜单</template>
+        <template v-for="(item, index) in mixMenus">
+          <el-menu-item v-if="index >= visibleNumber" :key="index" :index="item.path">
+            <item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
+          </el-menu-item>
+        </template>
+      </el-submenu>
+    </el-menu>
+  </div>
 </template>
 
 <script>
@@ -74,7 +79,7 @@ export default {
     // 设置子路由
     childrenMenus() {
       const childrenMenus = [];
-      this.menuRoutes.map((router) => {
+      this.menuRoutes.forEach((router) => {
         for (const item in router.children) {
           if (router.children[item].parentPath === undefined) {
             if (router.path === '/') {
@@ -88,7 +93,6 @@ export default {
           }
           childrenMenus.push(router.children[item]);
         }
-        return undefined;
       });
       return childrenMenus;
     },
@@ -142,17 +146,15 @@ export default {
     activeRoutes(key) {
       const routes = [];
       if (this.childrenMenus && this.childrenMenus.length > 0) {
-        this.childrenMenus.map((item) => {
+        this.childrenMenus.forEach((item) => {
           if (key === item.parentPath || (key === 'index' && item.path === '')) {
             routes.push(item);
           }
-          return undefined;
         });
       }
       if (routes.length > 0) {
         this.$emit('setSidebarRoutes', routes);
       }
-      return routes;
     },
     ishttp(url) {
       return url.indexOf('http://') !== -1 || url.indexOf('https://') !== -1;
