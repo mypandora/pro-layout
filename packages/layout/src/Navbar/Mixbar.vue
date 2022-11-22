@@ -1,35 +1,3 @@
-<template>
-  <div class="mypandora-layout-header__menu">
-    <el-menu
-      :default-active="activeMenu"
-      :background-color="backgroundColor"
-      :text-color="textColor"
-      mode="horizontal"
-      @select="handleSelect"
-    >
-      <template v-for="(item, index) in mixMenus">
-        <el-menu-item v-if="index < visibleNumber" :key="index" :index="item.path" :disabled="!item.children">
-          <app-item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
-        </el-menu-item>
-      </template>
-
-      <!-- 顶部菜单超出数量折叠 -->
-      <el-submenu
-        v-if="mixMenus.length > visibleNumber"
-        popper-class="mypandora-layout-header__popper-menu"
-        index="more"
-      >
-        <template slot="title">更多菜单</template>
-        <template v-for="(item, index) in mixMenus">
-          <el-menu-item v-if="index >= visibleNumber" :key="index" :index="item.path">
-            <item v-if="item.meta" :icon="item.meta.icon" :title="item.meta.title" />
-          </el-menu-item>
-        </template>
-      </el-submenu>
-    </el-menu>
-  </div>
-</template>
-
 <script>
 import AppItem from './Item.vue';
 import { getGrayReversedColor } from '../utils';
@@ -106,26 +74,25 @@ export default {
       } else if (!this.children) {
         activePath = path;
       }
-      // this.activeRoutes(activePath);
       return activePath;
     },
   },
-  beforeMount() {
-    window.addEventListener('resize', this.setVisibleNumber);
+  watch: {
+    activeMenu: {
+      handler: function (val, oldVal) {
+        this.activeRoutes(val);
+      },
+    },
   },
   mounted() {
-    this.setVisibleNumber();
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.setVisibleNumber);
+    const resizeObserver = new ResizeObserver(() => this.setVisibleNumber());
+    resizeObserver.observe(document.querySelector('.mypandora-layout-header__menu'));
   },
   methods: {
     // 根据宽度计算设置显示栏数
     setVisibleNumber() {
-      const width = document.body.getBoundingClientRect().width;
-      const logoWidth = document.querySelector('.navbar-logo-container')?.getBoundingClientRect().width || 0;
-      const rightMenuWidth = document.querySelector('.right-menu').getBoundingClientRect().width;
-      this.visibleNumber = Math.floor((width - rightMenuWidth - logoWidth - 116) / 116);
+      const width = document.querySelector('.mypandora-layout-header__menu')?.getBoundingClientRect().width || 0;
+      this.visibleNumber = Math.floor(width / 120) - 2;
     },
     // 菜单选择事件
     handleSelect(key, keyPath) {
@@ -152,13 +119,48 @@ export default {
           }
         });
       }
-      if (routes.length > 0) {
-        this.$emit('setSidebarRoutes', routes);
-      }
+      this.$emit('setSidebarRoutes', routes);
     },
     ishttp(url) {
       return url.indexOf('http://') !== -1 || url.indexOf('https://') !== -1;
     },
+  },
+  render() {
+    const { mixMenus, activeMenu, visibleNumber, backgroundColor, textColor } = this;
+    return (
+      <div class="mypandora-layout-header__menu">
+        <el-menu
+          default-active={activeMenu}
+          background-color={backgroundColor}
+          text-color={textColor}
+          mode="horizontal"
+          vOn:select={this.handleSelect}
+        >
+          {mixMenus.map(
+            (item, index) =>
+              index < visibleNumber && (
+                <el-menu-item key={index} index={item.path} disabled={!item.children}>
+                  {item.meta && <app-item icon={item.meta.icon} title={item.meta.title} />}
+                </el-menu-item>
+              ),
+          )}
+
+          {mixMenus.length > visibleNumber && (
+            <el-submenu popper-class="mypandora-layout-header__popper-menu" index="more">
+              <template slot="title">更多菜单</template>
+              {mixMenus.map(
+                (item, index) =>
+                  index >= visibleNumber && (
+                    <el-menu-item key={index} index={item.path}>
+                      {item.meta && <app-item icon={item.meta.icon} title={item.meta.title} />}
+                    </el-menu-item>
+                  ),
+              )}
+            </el-submenu>
+          )}
+        </el-menu>
+      </div>
+    );
   },
 };
 </script>

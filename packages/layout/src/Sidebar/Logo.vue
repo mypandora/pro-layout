@@ -15,6 +15,7 @@ export default {
     const { $slots, logoTitle, sidebar, settings } = rootProps;
     const collapse = !sidebar.opened;
     const { theme, sideTheme } = settings;
+    const isDark = sideTheme === 'theme-dark';
 
     const classObj = {
       'mypandora-layout-aside__logo': true,
@@ -22,7 +23,7 @@ export default {
     };
 
     const styleObj = {
-      '--color': sideTheme === 'theme-light' ? theme : '#ffffff',
+      '--color': isDark ? theme : '#ffffff',
     };
 
     const { logo, logoRender } = $slots;

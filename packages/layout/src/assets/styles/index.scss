@@ -28,10 +28,15 @@
   justify-content: center;
   width: 30px;
   height: 100%;
+  color: var(--color);
   font-size: 22px;
   background-color: var(--backgroundColor);
   cursor: pointer;
   z-index: 999;
+  &:hover {
+    transform: scale(1.2, 1.2);
+    transition: all 1s ease;
+  }
 }
 
 // 原生水平的滚动条无法通过margin-bottom为负值来把它挤出可视区
@@ -400,6 +405,11 @@ $w: 8, 16;
   // 隐藏右侧展开收缩图标，好看一点点
   i.el-submenu__icon-arrow {
     display: none;
+  }
+
+  .el-menu--horizontal > .el-menu-item:not(.is-disabled):focus,
+  .el-menu--horizontal > .el-menu-item:not(.is-disabled):hover {
+    background-color: var(--backgroundColor) !important;
   }
 
   .el-menu--horizontal .el-menu-item:not(.is-disabled):focus,

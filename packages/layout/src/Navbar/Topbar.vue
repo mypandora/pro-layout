@@ -57,10 +57,18 @@ export default {
     styleOffset() {
       const { topMenus, offsetIndex, styleWrapper } = this;
       const len = topMenus.length;
-      const width = `${Math.max(len * 120, styleWrapper?.width)}px`;
-      const offset = `${offsetIndex * 120}px`;
+      const width = Math.max(len * 120, Number.parseInt(styleWrapper?.width));
+      const offset = offsetIndex * 120;
+      const style = {};
+      if (Number.isSafeInteger(width)) {
+        style.width = `${width}px`;
+      }
+      if (Number.isSafeInteger(offset)) {
+        style.transform = `translate(${offset}px)`;
+        style.transition = 'all 0.3s ease';
+      }
 
-      return { width, transform: `translate(${offset})`, transition: '0.3s ease' };
+      return style;
     },
   },
   updated() {

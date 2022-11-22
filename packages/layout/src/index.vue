@@ -4,9 +4,7 @@
     <div v-if="device === 'mobile' && sidebar.opened" class="mypandora-layout--drawer-bg" @click="handleClickOutside" />
 
     <!-- 左侧菜单栏及固定状态下它的占位符 -->
-    <transition name="mypandora-ltf">
-      <sidebar v-show="showSide" @toggleSidebar="toggleSidebar" :style="styleSidebarObj" />
-    </transition>
+    <sidebar v-show="showSide" @toggleSidebar="toggleSidebar" :style="styleSidebarObj" />
     <div
       v-if="settings.fixedSide && showSide"
       class="mypandora-layout-aside--placeholder"
@@ -233,14 +231,14 @@ export default {
       const { opened } = sidebar;
 
       if (device === 'mobile') {
-        return { width: '100%' };
+        return { '--width': '100%', '--height': `${headerHeight}px` };
       }
 
       if (navMode === 'aside' && showSide && fixedHeader) {
         if (opened) {
-          return { width: `calc(100% - ${sideWidth}px)` };
+          return { width: `calc(100% - ${sideWidth}px)`, '--height': `${headerHeight}px` };
         } else {
-          return { width: `calc(100% - ${sideCollpaseWidth}px)` };
+          return { width: `calc(100% - ${sideCollpaseWidth}px)`, '--height': `${headerHeight}px` };
         }
       }
 
@@ -283,12 +281,12 @@ export default {
       this.sidebar.opened = false;
       this.sidebar.withoutAnimation = withoutAnimation;
     },
-    setSidebarRoutes(routes) {
+    setSidebarRoutes(routes = []) {
       const { settings } = this;
       const { navMode, autoMenu } = settings;
 
       if (navMode === 'mix') {
-        if (autoMenu && Array.isArray(routes)) {
+        if (autoMenu) {
           this.sidebarRoutes = routes;
         } else {
           this.sidebarRoutes = this.menuRoutes;
