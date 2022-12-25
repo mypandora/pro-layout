@@ -32,7 +32,13 @@
         </el-tooltip>
       </h3>
       <div class="drawer-item">
-        <theme-picker @change="handleSetting" />
+        <el-color-picker
+          :value="settings.theme"
+          :predefine="predefine"
+          @change="handleTheme"
+          class="theme-picker"
+          popper-class="theme-picker-dropdown"
+        />
       </div>
 
       <h3 class="drawer-title">导航模式</h3>
@@ -103,11 +109,9 @@
 
 <script>
 import { Loading } from 'element-ui';
-import ThemePicker from '../ThemePicker';
 
 export default {
   name: 'LayoutSettings',
-  components: { ThemePicker },
   inject: ['$computedProperty'],
   data() {
     return {};
@@ -129,6 +133,9 @@ export default {
           value: val,
         });
       },
+    },
+    predefine() {
+      return this.rootProps.predefine;
     },
   },
   methods: {
@@ -182,7 +189,6 @@ export default {
         key: 'autoMenu',
         value: val,
       });
-      // TODO 记住当前点击的路由
     },
     handleShowHeader(val) {
       this.$emit('changeSetting', {
@@ -199,6 +205,12 @@ export default {
     handleShowLogo(val) {
       this.$emit('changeSetting', {
         key: 'showLogo',
+        value: val,
+      });
+    },
+    handleTheme(val) {
+      this.$emit('changeSetting', {
+        key: 'theme',
         value: val,
       });
     },
@@ -358,10 +370,6 @@ export default {
     border: 1px solid #242425;
     border-width: 0 0 2px 2px;
     transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
     vertical-align: baseline;
   }
 }

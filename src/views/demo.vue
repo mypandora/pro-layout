@@ -1,5 +1,8 @@
 <template>
-  <div>我是页面测试组件: {{ this.$route.meta?.title }}</div>
+  <div>
+    我是页面测试组件:
+    <el-button type="primary"> {{ this.$route.meta?.title }} </el-button>
+  </div>
 </template>
 
 <script>

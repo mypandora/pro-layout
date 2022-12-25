@@ -143,7 +143,7 @@ export const getRoutes = () => {
               name: 'CacheList',
               path: 'cacheList',
               hidden: false,
-              component: 'monitor/cache/list',
+              component: 'demo',
               meta: { title: '缓存列表', icon: 'redis-list', noCache: false, link: null },
             },
           ],

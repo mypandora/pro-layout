@@ -57,7 +57,8 @@ import SizeSelect from '@/components/SizeSelect';
 import Search from '@/components/HeaderSearch';
 import { getRoutes } from '@/api/menu.js';
 import logoImg from '@/assets/logo/logo.png';
-import { initializeAndPathRoute } from './utils';
+import { initializeAndPathRoute } from './utilRouter';
+import ThemePicker from './mixin.vue';
 
 export default {
   name: 'BasicLayout',
@@ -67,6 +68,7 @@ export default {
     SizeSelect,
     Search,
   },
+  mixins: [ThemePicker],
   data() {
     return {
       // logo

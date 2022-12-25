@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'InnerLink',
+  name: 'MypandoraInnerLink',
   props: {
     src: {
       type: String,

@@ -1,20 +1,9 @@
-<template>
-  <el-color-picker
-    v-model="theme"
-    :disabled="disabled"
-    :predefine="predefine"
-    class="theme-picker"
-    popper-class="theme-picker-dropdown"
-  />
-</template>
-
 <script>
 const version = require('element-ui/package.json').version; // element-ui version from node_modules
 const ORIGINAL_THEME = '#409EFF'; // default color 不能改；element下载的文件css的默认主题颜色
 
 export default {
   name: 'ThemePicker',
-  inject: ['$computedProperty'],
   data() {
     return {
       chalk: '', // content of theme-chalk css
@@ -22,17 +11,8 @@ export default {
     };
   },
   computed: {
-    rootProps() {
-      return this.$computedProperty();
-    },
     defaultTheme() {
-      return this.rootProps.settings.theme;
-    },
-    predefine() {
-      return this.rootProps.predefine;
-    },
-    disabled() {
-      return this.rootProps.disabled;
+      return this.settings.theme;
     },
   },
   watch: {
@@ -51,7 +31,6 @@ export default {
       this.setTheme(this.defaultTheme);
     }
   },
-
   methods: {
     async setTheme(val) {
       const oldVal = this.chalk ? this.theme : ORIGINAL_THEME;
@@ -166,20 +145,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.theme-message,
-.theme-picker-dropdown {
-  z-index: 99999 !important;
-}
-
-.theme-picker .el-color-picker__trigger {
-  height: 26px !important;
-  width: 26px !important;
-  padding: 2px;
-}
-
-.theme-picker-dropdown .el-color-dropdown__link-btn {
-  display: none;
-}
-</style>
